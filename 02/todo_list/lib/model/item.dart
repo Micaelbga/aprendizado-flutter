@@ -1,8 +1,8 @@
 class Item {
   String title;
-  bool check;
+  bool check = false;
 
-  Item(this.title, this.check);
+  Item(this.title);
 
   set titleItem(String title) {
     this.title = title;
