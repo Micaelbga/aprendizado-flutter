@@ -27,7 +27,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final List<Item> itemList = <Item>[];
-
+  final TextEditingController inputText = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,30 +40,47 @@ class _HomePageState extends State<HomePage> {
         itemBuilder: (BuildContext context, int index) {
           return Container(
             decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(10)),
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(10)
+            ),
             height: 45,
-            child: Text('${itemList[index].title}'),
+            child: Row(
+              children: [
+                Text('${itemList[index].title}'),
+                Spacer(),
+                IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    setState(() {
+                      itemList[index].title = 'teste';
+                      TextField(
+                        controller: inputText,
+                        focusNode: FocusNode(),
+                      );
+                    });
+                  },
+                ),
+                IconButton(
+                  icon: itemList[index].check ? Icon(Icons.check_box_rounded, color: Colors.green) : Icon(Icons.check_box_outline_blank_outlined),
+                  onPressed: () {
+                    setState(() {
+                      itemList[index].check = !itemList[index].check;
+                    });
+                  }
+                )
+              ],
+            )
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          const item = EnterTitleItem();
+          setState(() {
+            itemList.add(new Item('a'));
+          });
         },
         child: const Icon(Icons.add),
       ),
-    );
-  }
-}
-
-class EnterTitleItem extends StatelessWidget {
-  const EnterTitleItem({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Text('test')
     );
   }
 }
