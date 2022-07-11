@@ -1,6 +1,10 @@
 # todo_list
 
-A new Flutter project.
+Future releases
+1- Delete item
+2- Save items in a database
+
+
 
 ## Getting Started
 
