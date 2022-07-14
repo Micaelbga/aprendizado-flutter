@@ -32,11 +32,13 @@ class _HomePageState extends State<HomePage> {
   var itemIndex;
   late FocusNode myFocusNode;
 
+  @override
   void initState() {
     super.initState();
     myFocusNode = FocusNode();
   }
 
+  @override
   void dispose() {
     myFocusNode.dispose();
     super.dispose();
@@ -60,34 +62,51 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GestureDetector(
+      onTap: () {
+        FocusScopeNode myFocusNode = FocusScope.of(context);
+        if (!myFocusNode.hasPrimaryFocus) {
+          isEdit = false;
+          myFocusNode.unfocus();
+        }
+      },
+      child: Scaffold(
         appBar: AppBar(
           title: Text("Lista de tarefas"),
         ),
         body: ListView.builder(
           itemCount: itemList.length,
           itemBuilder: (BuildContext context, int index) {
-            return Container(
-              decoration: BoxDecoration(
+            return Dismissible(
+              key: Key(itemList[index].title),
+              onDismissed: (direction) {
+                setState(() {
+                  itemList.removeAt(index);
+                });
+              },
+              child: Container(
+                decoration: BoxDecoration(
                   color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(10)),
-              margin: const EdgeInsets.all(5),
-              height: 45,
-              child: Row(
-                children: [
-                  Text('${itemList[index].title}'),
-                  Spacer(),
-                  IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () {
-                      setState(() {
-                        isEdit = true;
-                        itemIndex = index;
-                        myFocusNode.requestFocus();
-                      });
-                    },
-                  ),
-                  IconButton(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                margin: const EdgeInsets.all(5),
+                height: 45,
+                child: Row(
+                  children: [
+                    Text('${itemList[index].title}'),
+                    Spacer(),
+                    IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () {
+                        setState(() {
+                          isEdit = true;
+                          itemIndex = index;
+                          myFocusNode = new FocusNode();
+                          myFocusNode.requestFocus();
+                        });
+                      },
+                    ),
+                    IconButton(
                       icon: itemList[index].check
                           ? Icon(Icons.check_box_rounded, color: Colors.green)
                           : Icon(Icons.check_box_outline_blank_outlined),
@@ -95,8 +114,10 @@ class _HomePageState extends State<HomePage> {
                         setState(() {
                           itemList[index].check = !itemList[index].check;
                         });
-                      })
-                ],
+                      },
+                    ),
+                  ],
+                ),
               ),
             );
           },
@@ -108,15 +129,20 @@ class _HomePageState extends State<HomePage> {
             children: [
               Flexible(
                 child: TextFormField(
+                  onTap: () {
+                    isEdit = false;
+                  },                 
+                  maxLength: 35,
                   focusNode: myFocusNode,
                   controller: inputText,
                   decoration: InputDecoration(hintText: 'Nova Tarefa...'),
                 ),
               ),
-              Spacer(),
               IconButton(icon: Icon(Icons.add), onPressed: save),
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

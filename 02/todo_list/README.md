@@ -1,10 +1,12 @@
 # todo_list
 
 Future releases
-1- Delete item
-2- Save items in a database
+#### 1- Delete item (done)
+#### 2- Save items in a database
 
 
+
+___
 
 ## Getting Started
 
